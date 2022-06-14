@@ -5,24 +5,22 @@ import time
 import os
 import math
 import random
-from tokenize import Double
 import pygame, sys
-import getpass
 
 pygame.init()
 pygame.mixer.init()
 
-class UIButton:
+class UIButton: # we init thee button 
     RealPosX, RealPosY = 0, 0
     
     def __init__(self, Window, Text, TextSize, RectColor, TextColor, Hight, Length, PosX, PosY):
+        # the init self button. this is where we assign all of our unique global variables 
         self.Window = Window
         
-        if type(Text) ==type("a"):
+        if type(Text) ==type("a"): # make sure what we have is actually a type a text 
             smallfont = pygame.font.SysFont('Corbel', TextSize)
             self.Text = smallfont.render(Text, True, TextColor)
-        else:
-            print("Oh shit")
+
         self.Rect = RectColor
         self.Hight = Hight
         self.Length = Length
@@ -32,18 +30,19 @@ class UIButton:
         
         RealPosX, RealPosY = Hight, Length
         
-    def TestIfWasButton(self, mousePos):
+    def TestIfWasButton(self, mousePos): # test if what we clicked was a button 
+        # is called every second and if it 
         if self.PosX <= mousePos[0] and self.PosX + self.Length >= mousePos[0] and self.PosY <= mousePos[1] and self.PosY + self.Hight >= mousePos[1]:
             PS(4)
 
             return True
         
-    def Draw(self, bulletInt):
+    def Draw(self, bulletInt): # draw the button, may not work 
         if bulletInt != 5 :
             pygame.draw.rect(self.Window, self.Rect, [self.PosX, self.PosY, self.Length, self.Hight])
             self.Window.blit(self.Text, (self.PosX, self.PosY))
         
-    def ShowOrHide(self, action):
+    def ShowOrHide(self, action): # decide if we draw or hidee the button 
         if action == True: # show
             self.PosX = RealPosX
             self.PosY = RealPosY
@@ -65,7 +64,8 @@ NumOfReload = 0
     
 BackdropsTB = [pygame.image.load(os.path.join("Assets", "Forest0.jpg")),
              
-             ]
+             ] # wher e we store our backdrops 
+# where we store the images we cannot use 
 MiscTB = [pygame.image.load(os.path.join("Assets", "Cannon.png")),
     pygame.image.load(os.path.join("Assets", "CannonBall.png")),
     pygame.image.load(os.path.join("Assets", "Explosion.png")),
@@ -86,7 +86,7 @@ MiscTB = [pygame.image.load(os.path.join("Assets", "Cannon.png")),
     pygame.image.load(os.path.join("Assets", "Wolf_0.png")),
     pygame.image.load(os.path.join("Assets", "Wolf_1.png"))
 ]
-MiscTB[0] = pygame.transform.scale(MiscTB[0], (200, 200))
+MiscTB[0] = pygame.transform.scale(MiscTB[0], (200, 200)) # assign each scale independently 
 MiscTB[1] = pygame.transform.scale(MiscTB[1], (40, 40))
 MiscTB[2] = pygame.transform.scale(MiscTB[2], (110, 110))
 
@@ -109,28 +109,29 @@ MiscTB[16] = pygame.transform.scale(MiscTB[16], pygame.math.Vector2(200, 200))
 # wolf boy
 MiscTB[17] = pygame.transform.scale(MiscTB[17], pygame.math.Vector2(150, 100))
 MiscTB[18] = pygame.transform.scale(MiscTB[18], pygame.math.Vector2(150, 100))
-
+# play sound of object 
 SoundTB = [pygame.mixer.Sound(os.path.join("Assets", 'Fire.wav')),
            pygame.mixer.Sound(os.path.join("Assets", 'Pop.wav')),
            pygame.mixer.Sound(os.path.join("Assets", 'Pop.wav')),
            pygame.mixer.Sound(os.path.join("Assets", 'Pop.wav')),
            pygame.mixer.Sound(os.path.join("Assets", 'Pop.wav')),
            ]
-def PS(i):
+def PS(i): # the place where we excecute the play sound 
     global SoundTB
-    pygame.mixer.Sound.play(SoundTB[i])
+    pygame.mixer.Sound.play(SoundTB[i])# window hight 
 
-ColorTB = [(170,170,170), (100, 100, 100)]
-for i in range(len(BackdropsTB)):
+# all of our compiled colors 
+ColorTB = [(170,170,170), (100, 100, 100)] 
+for i in range(len(BackdropsTB)): # check if the backdrop has an integer 
     BackdropsTB[i] = pygame.transform.scale(BackdropsTB[i], (WinHight, WinLength))
-CurrentBackdrop = 0
+CurrentBackdrop = 0 # to check if value was actually passed 
 
 pygame.display.set_icon(BackdropsTB[0])
 
-def wait(f):
+def wait(f): # each wait setatement to make it more effecient 
     time.sleep(f)
     a = 1
-def Blackout(color):
+def Blackout(color): # our blackout to check if it blacked out 
     s = pygame.Surface((2000,2000))
     s.set_alpha(0)
     a, remoteInt = 1,0
@@ -150,11 +151,9 @@ def Blackout(color):
     s.set_alpha(0)
     global _Blackout
     #_Blackout = False
-    
-    
-    
+
 def BuildBackdrop(x):
-    
+    # settup the backdrop 
     Window.blit(BackdropsTB[x], (0, 0))
 
 _BulletImage = 0
@@ -181,14 +180,14 @@ for i in range(3):
 
 CannonLocation = pygame.math.Vector2(0, Window.get_height() - 200)
 CannonLocationHead = pygame.math.Vector2(130, Window.get_height() - 140)
-def PullFloat(x, min, max):
+def PullFloat(x, min, max): # make sure a designed x does not exceed a certain number 
     if x < min:
         x = min
     elif x > max:
         x = max
     return x
 
-def DrawBullet():
+def DrawBullet(): # this is also coroutine 
     global Window
     global bulletTB
     global bulletCacheTB
@@ -196,22 +195,22 @@ def DrawBullet():
     global CannonLocationHead
     global CannonLocation
     
-    for i in range(len(bulletTB)):
+    for i in range(len(bulletTB)): # show poly gons and our bullets 
         if bulletTB[i] != True:
             sheet = CannonLocationHead + bulletTB[i] * bulletCacheTB[i]
             
             Window.blit(MiscTB[1], sheet)
             
-            pygame.display.update()
+            pygame.display.update() # check if the bullets exceeded the map 
             bulletCacheTB[i]= bulletCacheTB[i] +22
             if bulletCacheTB[i] >= 1500:
                 bulletTB[i] = True
                 bulletCacheTB[i] = 1
 
-def ShowBullets(f):
+def ShowBullets(f): # show our bullet s
     global _BulletImage
     _BulletImage = f +3
-def ShowHealth(f):
+def ShowHealth(f): # show our health 
     global _HealthImage
     _HealthImage = f +9
 
@@ -219,12 +218,12 @@ _Health = 3
 ShowBullets(5)
 ShowHealth(_Health)
 
-def TakeDamage():
+def TakeDamage(): # take a pip of damage 
     global _Health
     _Health = _Health -1
     ShowHealth(PullFloat(_Health, 0, 3))
     
-def AddExplosion(vec0):
+def AddExplosion(vec0): # the actual append 
     global exploTB
     global exploCacheTB
     global exploCacheTB1
@@ -239,9 +238,9 @@ def DrawExplosion():# coroutine
     global exploCacheTB
     global exploCacheTB1
     
-    for i in range(len(exploTB)):
+    for i in range(len(exploTB)): # where we add the explision 
         if exploTB[i] != 0:
-            exploCacheTB[i] = exploCacheTB[i] +1
+            exploCacheTB[i] = exploCacheTB[i] +1# where we draw it over each frame 
             
             rotated_image = pygame.transform.rotate(MiscTB[2], exploCacheTB1[i])
             Window.blit(rotated_image, exploTB[i])
@@ -261,7 +260,7 @@ def SpawnMonster(monsterType, intt): #will be the fast times at ridgmont high
     
     global MonsterHealthTB
     global MonsterHealthTB1
-    
+     # wher ewe app end the object 
     monsterHealth, monsterSpeed, monsterImgInt = 0,0,0
     if monsterType == 1: # a bat
         monsterHealth, monsterSpeed, monsterImgInt = 5, 3, 13
@@ -283,7 +282,8 @@ def SpawnBat(i):
         SpawnMonster(1, random.randint(30, 250))
 def SpawnZombie(i):
     for _i in range(i):
-        SpawnMonster(2, random.randint(400, 500))
+        print("l")
+        # SpawnMonster(2, random.randint(400, 500))
 def SpawnWolf(i):
     for _i in range(i):
         SpawnMonster(3, random.randint(400, 500))
@@ -297,7 +297,7 @@ def DrawGold(i):
     smallfont = pygame.font.SysFont('Corbel', 35)
     Text = smallfont.render("Money: "+ str(i ), True, (0,0,0))
     Window.blit(Text, (200, 0))
-def ClearCache():
+def ClearCache(): # destroy none using 
     print("clearing cache")
     global MonsterTB
     global MonsterCacheTB
@@ -319,7 +319,7 @@ def ClearCache():
     bulletCacheTB = []
     bulletHitBoxTB= []
     
-def DrawMonsters():
+def DrawMonsters(): # a corutine 
     global MiscTB
     global _SpriteOffset
     global CannonLocationHead
@@ -415,7 +415,7 @@ def Main():
     global _BulletImage
     global _HealthImage
     global _Health
-    clock = pygame.time.Clock()
+    clock = pygame.time.Clock() # a clock that does nothing 
     global CannonLocationHead
     global CannonLocation
     
@@ -429,12 +429,9 @@ def Main():
     CannonBulletLimit = 5
     CannonBullets = CannonBulletLimit 
 
+    # we have done nothing about here 
     # Button(Window, "text", textSize,   (color), size y, size x, pos x, pos y)
     ReloadB = UIButton(Window, "Reload!", 22, (177, 177, 177),(0, 0, 0), 40 * 1.7, 77 ,    0,   200)
-    Upgrade0B = UIButton(Window, "Doublecast - 150 gold", 22, (232, 239, 33), (0,0,0), 40 , 190 ,    400,0)
-    Upgrade1B = UIButton(Window, "Heal - 50 gold", 22, (232, 239, 33), (0,0,0), 40 , 150 ,    600,0)
-    
-    CannonLocationRotateAxis = pygame.math.Vector2(150, Window.get_height() - 100)
     
     TimeCache = len(MiscTB)
     RealHalfSeconds, FakeHalfSeconds, Difficulty = 0, 0, 0
@@ -443,7 +440,7 @@ def Main():
         
         BuildBackdrop(CurrentBackdrop)
         clock.tick(44)
-        if TimeCache >= 22:
+        if TimeCache >= 20: # the real clock
             if (_SpriteOffset == 0):
                 _SpriteOffset = 1
             else:
@@ -459,18 +456,17 @@ def Main():
             RealHalfSeconds = RealHalfSeconds +1
         
         
-        for event in pygame.event.get():
+        for event in pygame.event.get(): # loop each event 
             mousePos = pygame.mouse.get_pos()
             
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT: # check if we clicked the exit game 
                 run = False
                 pygame.quit()
                 break
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 wutt0 = ReloadB.TestIfWasButton(mousePos)
-                wutt1 = Upgrade0B.TestIfWasButton(mousePos)
                 
-                if (wutt0 != True and wutt1 != True and CannonBullets >= 1): # didn't click a button, and we have some ammo. Lets shoot
+                if (wutt0 != True and CannonBullets >= 1): # didn't click a button, and we have some ammo. Lets shoot
                     CannonBullets = CannonBullets -1
                     NumOfBulletShot = NumOfBulletShot +1
                     
@@ -493,11 +489,6 @@ def Main():
                     CannonBullets = CannonBulletLimit #CannonBullets +1
                     ShowBullets(CannonBullets)
                     NumOfReload = NumOfReload +1
-                elif wutt1 == True:
-                    print("upgrade")
-                    if _Gold >= 150:
-                        _Gold = _Gold -150
-                        DoubleCastUpgrade = 5
                     
                 elif (CannonBullets <= 0):
                     print("Must reload!")
@@ -512,7 +503,6 @@ def Main():
                 
         
         UIButton.Draw(ReloadB, CannonBullets)
-        UIButton.Draw(Upgrade0B, DoubleCastUpgrade)
         
         Window.blit(MiscTB[0], CannonLocation)
         
